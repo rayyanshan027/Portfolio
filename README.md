@@ -6,9 +6,9 @@ The site highlights production AI work, full-stack projects, professional experi
 
 ## Live Site
 
-The recommended GitHub Pages URL is:
+The GitHub Pages URL is:
 
-`https://rayyanshan027.github.io`
+`https://rayyanshan027.github.io/Portfolio/`
 
 The custom domain can later be connected at:
 
@@ -36,31 +36,14 @@ Then open `http://localhost:8000`.
 
 ## Deploy to GitHub Pages
 
-### 1. Create the repository
-
-For the cleanest free URL, create a **public** repository named:
-
-`rayyanshan027.github.io`
-
-### 2. Initialize and push the project
-
-```bash
-git init
-git add .
-git commit -m "Launch portfolio website"
-git branch -M main
-git remote add origin https://github.com/rayyanshan027/rayyanshan027.github.io.git
-git push -u origin main
-```
-
-### 3. Enable GitHub Pages
+### 1. Enable GitHub Pages
 
 In the GitHub repository:
 
 1. Open **Settings → Pages**.
 2. Under **Build and deployment**, choose **GitHub Actions** as the source.
-3. Open the **Actions** tab and wait for the `Deploy portfolio to GitHub Pages` workflow to finish.
-4. Visit `https://rayyanshan027.github.io`.
+3. Open the **Actions** tab, select `Deploy portfolio to GitHub Pages`, and click **Run workflow**.
+4. Wait for the workflow to finish, then visit `https://rayyanshan027.github.io/Portfolio/`.
 
 Every push to `main` automatically publishes the latest version.
 
@@ -92,4 +75,3 @@ Do not add a `CNAME` file until the domain is owned and ready to connect.
 - Email: [rayyanshan027@gmail.com](mailto:rayyanshan027@gmail.com)
 - GitHub: [rayyanshan027](https://github.com/rayyanshan027)
 - LinkedIn: [Rayyan Shan](https://www.linkedin.com/in/rayyan-shan-65a637239/)
-
