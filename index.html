@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071a15" />
+    <meta
+      name="description"
+      content="Rayyan Shan is a software developer and machine learning engineer building production AI systems, deep learning models, and full-stack applications."
+    />
+    <title>Rayyan Shan — Software Developer &amp; ML Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Rayyan Shan, home">
+        <span class="brand-mark">RS</span>
+        <span>Rayyan Shan</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#work">Work</a>
+        <a href="#experience">Experience</a>
+        <a href="#about">About</a>
+      </nav>
+      <a class="header-contact" href="mailto:rayyanshan027@gmail.com">Let’s talk <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-orbit" aria-hidden="true">
+          <span class="orbit orbit-one"></span>
+          <span class="orbit orbit-two"></span>
+          <span class="orbit orbit-three"></span>
+          <span class="orbit-core">ML</span>
+          <span class="orbit-label label-data">DATA</span>
+          <span class="orbit-label label-model">MODEL</span>
+          <span class="orbit-label label-product">PRODUCT</span>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> Software Developer + ML Engineer</p>
+          <h1 id="hero-title">I turn complex data into <em>useful software.</em></h1>
+          <p class="hero-summary">
+            I build and deploy production AI systems, deep learning models, and full-stack applications—from research
+            prototype to reliable product.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#work">Explore my work <span aria-hidden="true">↓</span></a>
+            <a class="button button-ghost" href="mailto:rayyanshan027@gmail.com">Get in touch</a>
+          </div>
+          <div class="hero-meta">
+            <p><span class="status-dot"></span> Available for opportunities</p>
+            <p>Edmonton, AB <span class="meta-divider">/</span> Open to relocation</p>
+          </div>
+        </div>
+
+        <div class="hero-proof" aria-label="Key experience highlights">
+          <div><strong>600+</strong><span>Microscopy images processed</span></div>
+          <div><strong>25–73%</strong><span>Prediction error reduction</span></div>
+          <div><strong>End-to-end</strong><span>Model, API, UI, and deployment</span></div>
+        </div>
+      </section>
+
+      <section class="intro" id="about" aria-labelledby="intro-title">
+        <p class="section-index">01 / About</p>
+        <div class="intro-content">
+          <h2 id="intro-title">Building at the intersection of <span>research and engineering.</span></h2>
+          <div class="intro-copy">
+            <p>
+              I’m a University of Alberta Computing Science graduate focused on production machine learning. I enjoy
+              the entire lifecycle: shaping raw data, training and evaluating models, building APIs and interfaces,
+              and shipping systems people can actually use.
+            </p>
+            <a class="inline-link" href="mailto:rayyanshan027@gmail.com">Work with me <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="work section-shell" id="work" aria-labelledby="work-title">
+        <div class="section-header">
+          <div>
+            <p class="section-index">02 / Selected Work</p>
+            <h2 id="work-title">Projects with impact.</h2>
+          </div>
+          <p>Research systems and software built to solve real problems.</p>
+        </div>
+
+        <article class="project-card project-featured">
+          <div class="project-visual quorum-visual" aria-label="Abstract visualization of microscopy image segmentation">
+            <div class="visual-toolbar"><span></span><span></span><span></span><b>SEGMENTATION_VIEWER</b></div>
+            <div class="microscopy-canvas">
+              <span class="cell cell-a"></span>
+              <span class="cell cell-b"></span>
+              <span class="cell cell-c"></span>
+              <span class="cell cell-d"></span>
+              <span class="mask mask-a"></span>
+              <span class="mask mask-b"></span>
+              <span class="mask mask-c"></span>
+              <span class="crosshair crosshair-a">+</span>
+              <span class="crosshair crosshair-b">+</span>
+            </div>
+            <div class="visual-readout"><span>CONFIDENCE 0.94</span><span>CELLS 128</span><span>SCALE 20 μm</span></div>
+          </div>
+          <div class="project-content">
+            <div class="project-topline"><span>Featured / Biomedical AI</span><span>2026</span></div>
+            <h3>Quorum AI</h3>
+            <p class="project-lead">
+              A production biomedical image segmentation platform that helps oncology researchers analyze fluorescence
+              microscopy images in the browser.
+            </p>
+            <ul class="project-list">
+              <li>Trained a U-Net++ model on 200 expert-annotated images.</li>
+              <li>Built deterministic inference, confidence estimation, and automated cell metrics.</li>
+              <li>Deployed a Dockerized FastAPI + React system to a cloud Linux server.</li>
+            </ul>
+            <div class="impact-grid">
+              <div><strong>600+</strong><span>images processed</span></div>
+              <div><strong>2–10</strong><span>active researchers</span></div>
+            </div>
+            <div class="tech-row"><span>PyTorch</span><span>FastAPI</span><span>React</span><span>Docker</span></div>
+            <a class="project-link" href="https://quorum-ai.app/" target="_blank" rel="noreferrer">View live platform <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-visual finley-visual">
+            <img src="./assets/finley-benchmark.svg" alt="Benchmark chart comparing Finley neural prediction models" />
+          </div>
+          <div class="project-content">
+            <div class="project-topline"><span>Machine Learning / Neuroscience</span><span>2026</span></div>
+            <h3>Finley</h3>
+            <p class="project-lead">
+              A cross-session neural prediction pipeline built on CRCNS HC-6 recordings, designed around rigorous
+              leave-one-session-out evaluation.
+            </p>
+            <ul class="project-list">
+              <li>Compared Ridge, XGBoost, and nonlinear neural prediction models.</li>
+              <li>Designed residual adaptation for difficult recording sessions.</li>
+            </ul>
+            <div class="impact-grid">
+              <div><strong>8 / 9</strong><span>subjects beat XGBoost</span></div>
+              <div><strong>25–73%</strong><span>error reduction</span></div>
+            </div>
+            <div class="tech-row"><span>Python</span><span>XGBoost</span><span>Scientific ML</span></div>
+            <a class="project-link" href="https://github.com/rayyanshan027/Finley" target="_blank" rel="noreferrer">View repository <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+
+        <article class="project-card project-cyan">
+          <div class="project-visual cyan-visual">
+            <img src="./assets/cyan-homepage.png" alt="Cyan distributed social media platform home feed" />
+          </div>
+          <div class="project-content">
+            <div class="project-topline"><span>Full-stack / Distributed Systems</span><span>2025</span></div>
+            <h3>Cyan</h3>
+            <p class="project-lead">
+              A federated social publishing platform with profiles, posts, comments, likes, follows, and
+              server-to-server communication.
+            </p>
+            <ul class="project-list">
+              <li>Built REST APIs and backend services supporting ActivityPub-style federation.</li>
+              <li>Delivered responsive publishing and social workflows across the React application.</li>
+            </ul>
+            <div class="tech-row"><span>Django REST</span><span>React</span><span>PostgreSQL</span></div>
+            <div class="project-link-group">
+              <a class="project-link" href="https://github.com/rayyanshan027/cyan-app" target="_blank" rel="noreferrer">Repository <span aria-hidden="true">↗</span></a>
+              <a class="project-link" href="https://youtu.be/ATfmft-2N4U?si=SP4erdDU6jD8p4dN" target="_blank" rel="noreferrer">Video demo <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="experience section-shell" id="experience" aria-labelledby="experience-title">
+        <div class="section-header">
+          <div>
+            <p class="section-index">03 / Experience</p>
+            <h2 id="experience-title">Where I’ve contributed.</h2>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline-item">
+            <div class="timeline-date"><span>Jan 2026 — Present</span><i></i></div>
+            <div class="timeline-content">
+              <p class="organization">Quorum AI · University of Alberta Faculty of Medicine</p>
+              <h3>AI Research Software Developer</h3>
+              <p>
+                Designing, training, and deploying an end-to-end biomedical segmentation system for oncology research.
+                Partnering directly with researchers to validate model outputs and support a manuscript in preparation.
+              </p>
+              <div class="tech-row"><span>Computer Vision</span><span>PyTorch</span><span>Cloud Deployment</span></div>
+            </div>
+          </article>
+
+          <article class="timeline-item">
+            <div class="timeline-date"><span>Jun 2026 — Present</span><i></i></div>
+            <div class="timeline-content">
+              <p class="organization">Ormintel</p>
+              <h3>AI Solutions Research Intern</h3>
+              <p>
+                Building a structured enterprise AI knowledge base from hundreds of implementation use cases. Designing
+                taxonomy and normalization workflows for intelligent search and scalable partner onboarding.
+              </p>
+              <div class="tech-row"><span>Enterprise AI</span><span>Data Modeling</span><span>LLM Workflows</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="skills section-shell" aria-labelledby="skills-title">
+        <div class="section-header">
+          <div>
+            <p class="section-index">04 / Toolkit</p>
+            <h2 id="skills-title">What I work with.</h2>
+          </div>
+        </div>
+        <div class="skill-grid">
+          <article><span>01</span><h3>Machine Learning</h3><p>PyTorch · Computer Vision · Deep Learning · U-Net++ · Cellpose · scikit-learn · XGBoost</p></article>
+          <article><span>02</span><h3>Backend</h3><p>Python · FastAPI · Django · Django REST Framework · PostgreSQL · SQL · REST APIs</p></article>
+          <article><span>03</span><h3>Frontend</h3><p>React · TypeScript · JavaScript · Vite · HTML · CSS · Responsive UI</p></article>
+          <article><span>04</span><h3>Infrastructure</h3><p>Docker · Docker Compose · Linux · Nginx · Git · GitHub · Hetzner Cloud</p></article>
+        </div>
+      </section>
+
+      <section class="education section-shell" aria-labelledby="education-title">
+        <p class="section-index">05 / Education &amp; Research</p>
+        <div class="education-grid">
+          <div>
+            <p class="education-label">University of Alberta</p>
+            <h2 id="education-title">B.Sc. Computing Science</h2>
+            <p>Minor in Mathematics · Graduated April 2026</p>
+          </div>
+          <div class="publication">
+            <span>Manuscript in preparation · Co-author</span>
+            <p>AI-based Biomedical Image Segmentation for Automated Analysis of Fluorescence Microscopy Images</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact" aria-labelledby="contact-title">
+        <p class="section-index">06 / Contact</p>
+        <h2 id="contact-title">Let’s build something <em>useful.</em></h2>
+        <p>I’m open to software engineering and machine learning opportunities in Canada and beyond.</p>
+        <a class="contact-email" href="mailto:rayyanshan027@gmail.com">rayyanshan027@gmail.com <span aria-hidden="true">↗</span></a>
+        <div class="contact-details">
+          <span>Edmonton, Alberta</span>
+          <a href="tel:+17805668534">+1 780 566 8534</a>
+          <a href="https://github.com/rayyanshan027" target="_blank" rel="noreferrer">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/rayyan-shan-65a637239/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top"><span class="brand-mark">RS</span><span>Rayyan Shan</span></a>
+      <p>Designed and built with intention.</p>
+      <a href="#top">Back to top ↑</a>
+    </footer>
+  </body>
+</html>
