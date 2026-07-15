@@ -1,0 +1,79 @@
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage[margin=0.52in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=1.1em,itemsep=1.2pt,topsep=2pt,parsep=0pt,partopsep=0pt}
+\titleformat{\section}{\large\bfseries\uppercase}{}{0pt}{}[\vspace{-3pt}\titlerule]
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+
+\newcommand{\role}[4]{%
+  \textbf{#1} \hfill \textbf{#2}\\[-1pt]
+  \textit{#3} \hfill \textit{#4}\vspace{-2pt}
+}
+
+\newcommand{\project}[2]{%
+  \textbf{#1} \hfill \textit{#2}\vspace{-2pt}
+}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries RAYYAN SHAN}\\[3pt]
+  Edmonton, AB $\mid$ Open to Relocation $\mid$
+  \href{tel:+17805668534}{(780) 566-8534} $\mid$
+  \href{mailto:rayyanshan027@gmail.com}{rayyanshan027@gmail.com}\\[2pt]
+  \href{https://linkedin.com/in/rayyan-shan-65a637239}{linkedin.com/in/rayyan-shan-65a637239} $\mid$
+  \href{https://github.com/rayyanshan027}{github.com/rayyanshan027} $\mid$
+  \href{https://rayyanshan027.github.io/Portfolio}{rayyanshan027.github.io/Portfolio}
+\end{center}
+\vspace{-7pt}
+
+\section{Technical Skills}
+\textbf{Languages:} Python, Java, JavaScript, TypeScript, SQL, C\\
+\textbf{Frameworks:} PyTorch, FastAPI, Django REST Framework, React, Vite\\
+\textbf{ML/Data:} Computer Vision, Semantic Segmentation, U-Net++, OpenCV, NumPy, Pandas, scikit-learn, XGBoost\\
+\textbf{Tools:} PostgreSQL, Docker, Linux, Nginx, Git, GitHub, Hetzner Cloud
+
+\section{Experience}
+\role{AI Research Software Developer}{January 2026--Present}{Quorum AI, University of Alberta}{Edmonton, AB}
+\begin{itemize}
+  \item Built and deployed an AI-powered biomedical image-segmentation platform using PyTorch, U-Net++, FastAPI, React, TypeScript, and Docker.
+  \item Developed the complete ML pipeline for 200 expert-annotated microscopy images, including preprocessing, augmentation, validation, inference, confidence estimation, and automated cell-metric generation.
+  \item Created REST APIs and researcher workflows for image upload, segmentation visualization, TIFF export, and batch ZIP downloads; deployed to a Linux cloud server with Docker Compose and Nginx.
+  \item Supported 2--10 oncology researchers processing 600+ images with substantially less manual segmentation; contributing as a co-author to the resulting manuscript.
+\end{itemize}
+
+\role{AI Solutions Research Intern}{June 2026--Present}{Omintel}{Remote}
+\begin{itemize}
+  \item Extracted and standardized 300+ enterprise AI use cases from technology-partner websites into a structured knowledge base.
+  \item Designed a normalized taxonomy and search schema covering industries, business problems, AI capabilities, implementation approaches, and measurable outcomes.
+  \item Evaluated LLM-assisted extraction workflows and collaborated with technical and business stakeholders to improve partner onboarding and AI-solution discovery.
+\end{itemize}
+
+\section{Projects}
+\project{Cross-Session Neural Prediction Pipeline}{Python, scikit-learn, XGBoost}
+\begin{itemize}
+  \item Built a leave-one-session-out machine-learning pipeline using CRCNS HC-6 neural-recording data and compared Ridge Regression, XGBoost, and nonlinear prediction models.
+  \item Developed a residual-adaptation method that reduced error by 25--73\% on difficult sessions and outperformed XGBoost on 8 of 9 evaluated subjects.
+\end{itemize}
+
+\project{Cyan Federated Social Platform}{Django REST Framework, React, PostgreSQL}
+\begin{itemize}
+  \item Developed a federated social platform with authentication, profiles, posts, comments, likes, follows, and server-to-server communication.
+  \item Built REST APIs, automated tests, and backend services supporting distributed ActivityPub-style functionality.
+\end{itemize}
+
+\section{Education}
+\textbf{University of Alberta} \hfill \textbf{Graduated April 2026}\\[-1pt]
+Bachelor of Science in Computing Science, Minor in Mathematics \hfill Edmonton, AB
+
+\end{document}
