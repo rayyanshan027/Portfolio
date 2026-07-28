@@ -185,7 +185,7 @@
     const input = normalizeDrawing();
     const ink = input.reduce((total, value) => total + value, 0);
 
-    if (ink < 5) {
+    if (ink < 2) {
       probabilities = digits.map(() => 0.1);
       activations = activations.map(() => 0.08);
       lastGuess = null;
@@ -244,10 +244,6 @@
     const source = getLogicalImageData(digitCanvas, digitContext, digitCanvasSize, digitCanvasSize);
     const bounds = findInkBounds(source, digitCanvasSize, digitCanvasSize);
 
-    templateContext.clearRect(0, 0, gridSize, gridSize);
-    templateContext.fillStyle = "#000";
-    templateContext.fillRect(0, 0, gridSize, gridSize);
-
     if (!bounds) {
       return new Array(gridSize * gridSize).fill(0);
     }
@@ -259,20 +255,27 @@
     const targetHeight = Math.max(1, height * scale);
     const targetX = (gridSize - targetWidth) / 2;
     const targetY = (gridSize - targetHeight) / 2;
+    const values = new Array(gridSize * gridSize).fill(0);
 
-    templateContext.drawImage(
-      digitCanvas,
-      bounds.minX * pixelRatio,
-      bounds.minY * pixelRatio,
-      width * pixelRatio,
-      height * pixelRatio,
-      targetX,
-      targetY,
-      targetWidth,
-      targetHeight
-    );
+    for (let y = bounds.minY; y <= bounds.maxY; y += 1) {
+      for (let x = bounds.minX; x <= bounds.maxX; x += 1) {
+        const index = (y * digitCanvasSize + x) * 4;
+        const inkValue = getInkValue(source.data[index], source.data[index + 1], source.data[index + 2]);
 
-    return thickenValues(imageDataToValues(templateContext.getImageData(0, 0, gridSize, gridSize)));
+        if (inkValue <= 0) {
+          continue;
+        }
+
+        const normalizedX = targetX + (x - bounds.minX) * scale;
+        const normalizedY = targetY + (y - bounds.minY) * scale;
+        const gridX = Math.max(0, Math.min(gridSize - 1, Math.round(normalizedX)));
+        const gridY = Math.max(0, Math.min(gridSize - 1, Math.round(normalizedY)));
+        const gridIndex = gridY * gridSize + gridX;
+        values[gridIndex] = Math.max(values[gridIndex], inkValue);
+      }
+    }
+
+    return thickenValues(values);
   }
 
   function getLogicalImageData(canvas, context, logicalWidth, logicalHeight) {
@@ -482,13 +485,7 @@
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {
         const index = (y * width + x) * 4;
-        const red = imageData.data[index];
-        const green = imageData.data[index + 1];
-        const blue = imageData.data[index + 2];
-        const brightness = Math.max(red, green, blue);
-        const isGreenStroke = green > 90 && green > red * 1.25;
-        const isDarkStroke = brightness < 18;
-        if (isGreenStroke || isDarkStroke) {
+        if (getInkValue(imageData.data[index], imageData.data[index + 1], imageData.data[index + 2]) > 0) {
           minX = Math.min(minX, x);
           minY = Math.min(minY, y);
           maxX = Math.max(maxX, x);
@@ -498,6 +495,21 @@
     }
 
     return maxX >= 0 ? { minX, minY, maxX, maxY } : null;
+  }
+
+  function getInkValue(red, green, blue) {
+    const greenInk = green > 90 && green > red * 1.2 && green > blue * 1.2;
+    const darkInk = red < 18 && green < 18 && blue < 18;
+
+    if (greenInk) {
+      return Math.min(1, green / 255);
+    }
+
+    if (darkInk) {
+      return 1;
+    }
+
+    return 0;
   }
 
   function makeActivations(input, output) {
