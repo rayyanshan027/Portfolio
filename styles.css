@@ -595,6 +595,9 @@ h1 em,
 #digit-canvas {
   aspect-ratio: 1;
   cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 #network-canvas {

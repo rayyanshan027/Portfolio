@@ -29,6 +29,7 @@
   let mnistModel = null;
   let modelReady = false;
   let pixelRatio = 1;
+  let activePointerId = null;
 
   setupCanvas();
   templates = digits.map((digit) => createTemplates(digit));
@@ -43,19 +44,25 @@
   digitCanvas.addEventListener("pointerup", stopDrawing);
   digitCanvas.addEventListener("pointercancel", stopDrawing);
   digitCanvas.addEventListener("pointerleave", stopDrawing);
+  digitCanvas.addEventListener("touchstart", startTouchDrawing, { passive: false });
+  digitCanvas.addEventListener("touchmove", touchDraw, { passive: false });
+  digitCanvas.addEventListener("touchend", stopDrawing);
+  digitCanvas.addEventListener("touchcancel", stopDrawing);
   clearButton?.addEventListener("click", clearDrawing);
   window.addEventListener("resize", resizeCanvases);
 
   function setupCanvas() {
-    resizeCanvases();
+    templateCanvas.width = gridSize;
+    templateCanvas.height = gridSize;
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    setCanvasResolution(digitCanvas, digitContext, digitCanvasSize, digitCanvasSize);
+    setCanvasResolution(networkCanvas, networkContext, networkCanvasWidth, networkCanvasHeight);
     digitContext.fillStyle = "#09231d";
     digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
     digitContext.lineCap = "round";
     digitContext.lineJoin = "round";
     digitContext.lineWidth = 22;
     digitContext.strokeStyle = "#baffd8";
-    templateCanvas.width = gridSize;
-    templateCanvas.height = gridSize;
   }
 
   function resizeCanvases() {
@@ -82,9 +89,13 @@
   }
 
   function startDrawing(event) {
+    event.preventDefault();
     isDrawing = true;
+    activePointerId = event.pointerId;
     lastPoint = getPoint(event);
-    digitCanvas.setPointerCapture(event.pointerId);
+    if (typeof digitCanvas.setPointerCapture === "function") {
+      digitCanvas.setPointerCapture(event.pointerId);
+    }
     drawDot(lastPoint);
     classifyDrawing();
   }
@@ -94,7 +105,40 @@
       return;
     }
 
+    if (activePointerId !== null && event.pointerId !== activePointerId) {
+      return;
+    }
+
+    event.preventDefault();
     const point = getPoint(event);
+    digitContext.beginPath();
+    digitContext.moveTo(lastPoint.x, lastPoint.y);
+    digitContext.lineTo(point.x, point.y);
+    digitContext.stroke();
+    lastPoint = point;
+    classifyDrawing();
+  }
+
+  function startTouchDrawing(event) {
+    if (!event.changedTouches.length) {
+      return;
+    }
+
+    event.preventDefault();
+    isDrawing = true;
+    activePointerId = null;
+    lastPoint = getPoint(event.changedTouches[0]);
+    drawDot(lastPoint);
+    classifyDrawing();
+  }
+
+  function touchDraw(event) {
+    if (!isDrawing || !lastPoint || !event.changedTouches.length) {
+      return;
+    }
+
+    event.preventDefault();
+    const point = getPoint(event.changedTouches[0]);
     digitContext.beginPath();
     digitContext.moveTo(lastPoint.x, lastPoint.y);
     digitContext.lineTo(point.x, point.y);
@@ -110,6 +154,7 @@
 
     isDrawing = false;
     lastPoint = null;
+    activePointerId = null;
   }
 
   function drawDot(point) {
