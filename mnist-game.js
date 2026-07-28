@@ -59,10 +59,7 @@
     setCanvasResolution(networkCanvas, networkContext, networkCanvasWidth, networkCanvasHeight);
     digitContext.fillStyle = "#09231d";
     digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
-    digitContext.lineCap = "round";
-    digitContext.lineJoin = "round";
-    digitContext.lineWidth = 22;
-    digitContext.strokeStyle = "#baffd8";
+    applyDigitDrawingStyle();
   }
 
   function resizeCanvases() {
@@ -79,6 +76,7 @@
     digitContext.fillStyle = "#09231d";
     digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
     digitContext.drawImage(drawingSnapshot, 0, 0);
+    applyDigitDrawingStyle();
     renderNetwork();
   }
 
@@ -86,6 +84,14 @@
     canvas.width = Math.round(logicalWidth * pixelRatio);
     canvas.height = Math.round(logicalHeight * pixelRatio);
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  }
+
+  function applyDigitDrawingStyle() {
+    digitContext.lineCap = "round";
+    digitContext.lineJoin = "round";
+    digitContext.lineWidth = 22;
+    digitContext.strokeStyle = "#baffd8";
+    digitContext.fillStyle = "#baffd8";
   }
 
   function startDrawing(event) {
@@ -476,8 +482,13 @@
     for (let y = 0; y < height; y += 1) {
       for (let x = 0; x < width; x += 1) {
         const index = (y * width + x) * 4;
+        const red = imageData.data[index];
         const green = imageData.data[index + 1];
-        if (green > 90) {
+        const blue = imageData.data[index + 2];
+        const brightness = Math.max(red, green, blue);
+        const isGreenStroke = green > 90 && green > red * 1.25;
+        const isDarkStroke = brightness < 18;
+        if (isGreenStroke || isDarkStroke) {
           minX = Math.min(minX, x);
           minY = Math.min(minY, y);
           maxX = Math.max(maxX, x);
@@ -609,6 +620,7 @@
   function clearDrawing() {
     digitContext.fillStyle = "#09231d";
     digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
+    applyDigitDrawingStyle();
     probabilities = digits.map(() => 0.1);
     activations = Array.from({ length: 12 }, () => 0.08);
     lastGuess = null;
