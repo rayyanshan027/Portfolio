@@ -36,14 +36,36 @@
 
     <main id="main-content">
       <section class="hero" id="top" aria-labelledby="hero-title">
-        <div class="hero-orbit" aria-hidden="true">
-          <span class="orbit orbit-one"></span>
-          <span class="orbit orbit-two"></span>
-          <span class="orbit orbit-three"></span>
-          <span class="orbit-core">ML</span>
-          <span class="orbit-label label-data">DATA</span>
-          <span class="orbit-label label-model">MODEL</span>
-          <span class="orbit-label label-product">PRODUCT</span>
+        <div class="hero-game neural-game" aria-label="Interactive digit recognition neural network game">
+          <div class="visual-toolbar"><span></span><span></span><span></span><b>NEURAL_PLAYGROUND</b></div>
+          <div class="game-stage">
+            <div class="draw-panel">
+              <div class="game-target">Prediction <strong data-digit-prediction>—</strong></div>
+              <canvas
+                id="digit-canvas"
+                width="280"
+                height="280"
+                aria-label="Draw a handwritten digit here"
+              ></canvas>
+              <div class="game-actions">
+                <button type="button" data-game-clear>Clear</button>
+              </div>
+            </div>
+            <div class="network-panel">
+              <canvas
+                id="network-canvas"
+                width="460"
+                height="280"
+                aria-hidden="true"
+              ></canvas>
+              <div class="probability-list" data-probabilities></div>
+            </div>
+          </div>
+          <div class="visual-readout">
+            <span data-game-status>DRAW ANY DIGIT</span>
+            <span>LIVE ACTIVATIONS</span>
+            <span>MNIST-STYLE</span>
+          </div>
         </div>
 
         <div class="hero-copy">
@@ -178,6 +200,7 @@
             </div>
           </div>
         </article>
+
       </section>
 
       <section class="experience section-shell" id="experience" aria-labelledby="experience-title">
@@ -266,5 +289,6 @@
       <p>Designed and built with intention.</p>
       <a href="#top">Back to top ↑</a>
     </footer>
+    <script src="./mnist-game.js"></script>
   </body>
 </html>
