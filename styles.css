@@ -129,8 +129,8 @@ nav a:focus-visible {
   background: var(--forest);
   color: var(--white);
   display: grid;
-  column-gap: clamp(36px, 5vw, 86px);
-  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.78fr);
+  column-gap: clamp(42px, 5vw, 96px);
+  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.58fr);
   min-height: calc(100vh - 76px);
   overflow: hidden;
   padding: clamp(70px, 9vw, 132px) clamp(20px, 7vw, 112px) 0;
@@ -275,7 +275,7 @@ h1 em,
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
-  max-width: 520px;
+  max-width: 430px;
   position: relative;
   width: 100%;
   z-index: 2;
@@ -519,15 +519,16 @@ h1 em,
   display: grid;
   grid-template-rows: 36px auto 32px;
   min-height: 0;
-  padding: 12px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.24);
+  padding: 10px;
 }
 
 .game-stage {
   display: grid;
-  gap: 14px;
-  grid-template-columns: minmax(150px, 0.86fr) minmax(180px, 1.14fr);
+  gap: 12px;
+  grid-template-columns: minmax(128px, 0.8fr) minmax(164px, 1.2fr);
   min-height: 0;
-  padding: 14px 0;
+  padding: 12px 0;
 }
 
 .draw-panel,
@@ -554,7 +555,7 @@ h1 em,
 
 .game-target strong {
   color: var(--green-light);
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
 }
 
@@ -615,14 +616,14 @@ h1 em,
 .probability-row {
   align-items: center;
   display: grid;
-  gap: 8px;
-  grid-template-columns: 18px 1fr 42px;
+  gap: 6px;
+  grid-template-columns: 14px 1fr 34px;
 }
 
 .probability-row span {
   color: #81948c;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 8px;
 }
 
 .probability-track {
@@ -975,6 +976,19 @@ footer > a:last-child {
     grid-row: 2;
     justify-self: start;
     max-width: 620px;
+  }
+
+  .game-stage {
+    grid-template-columns: minmax(150px, 0.86fr) minmax(180px, 1.14fr);
+  }
+
+  .probability-row {
+    gap: 8px;
+    grid-template-columns: 18px 1fr 42px;
+  }
+
+  .probability-row span {
+    font-size: 9px;
   }
 
   .hero-copy {
