@@ -129,8 +129,7 @@ nav a:focus-visible {
   background: var(--forest);
   color: var(--white);
   display: grid;
-  column-gap: clamp(42px, 5vw, 96px);
-  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.58fr);
+  grid-template-columns: 1fr;
   min-height: calc(100vh - 76px);
   overflow: hidden;
   padding: clamp(70px, 9vw, 132px) clamp(20px, 7vw, 112px) 0;
@@ -148,8 +147,6 @@ nav a:focus-visible {
 }
 
 .hero-copy {
-  grid-column: 1;
-  grid-row: 1;
   max-width: 850px;
   padding-bottom: 100px;
   position: relative;
@@ -270,17 +267,6 @@ h1 em,
   color: #43564e;
 }
 
-.hero-game {
-  align-self: center;
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: end;
-  max-width: 430px;
-  position: relative;
-  width: 100%;
-  z-index: 2;
-}
-
 .hero-proof {
   align-self: end;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
@@ -311,6 +297,43 @@ h1 em,
 .hero-proof span {
   color: #71877e;
   font-size: 11px;
+}
+
+.playground-section {
+  background: #0a211b;
+  color: var(--white);
+  display: grid;
+  gap: clamp(34px, 5vw, 76px);
+  grid-template-columns: minmax(260px, 0.58fr) minmax(0, 1.42fr);
+  padding: clamp(72px, 8vw, 116px) clamp(20px, 7vw, 112px);
+}
+
+.playground-copy {
+  align-self: center;
+  max-width: 430px;
+}
+
+.playground-copy .section-index {
+  margin-bottom: 20px;
+}
+
+.playground-copy h2 {
+  font-size: clamp(38px, 4.6vw, 66px);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+}
+
+.playground-copy > p:not(.section-index) {
+  color: #94a69f;
+  font-size: 15px;
+  line-height: 1.75;
+  margin-top: 22px;
+}
+
+.playground-game {
+  align-self: center;
+  width: 100%;
 }
 
 .section-shell,
@@ -517,18 +540,18 @@ h1 em,
   border: 1px solid #24423c;
   color: var(--white);
   display: grid;
-  grid-template-rows: 36px auto 32px;
+  grid-template-rows: 42px auto 36px;
   min-height: 0;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.24);
-  padding: 10px;
+  padding: 12px;
 }
 
 .game-stage {
   display: grid;
-  gap: 12px;
-  grid-template-columns: minmax(128px, 0.8fr) minmax(164px, 1.2fr);
+  gap: 18px;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(340px, 1.25fr);
   min-height: 0;
-  padding: 12px 0;
+  padding: 18px 0;
 }
 
 .draw-panel,
@@ -538,7 +561,7 @@ h1 em,
 
 .draw-panel {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   grid-template-rows: auto 1fr auto;
 }
 
@@ -555,7 +578,7 @@ h1 em,
 
 .game-target strong {
   color: var(--green-light);
-  font-size: 22px;
+  font-size: 28px;
   line-height: 1;
 }
 
@@ -591,7 +614,7 @@ h1 em,
   cursor: pointer;
   font-family: var(--mono);
   font-size: 9px;
-  min-height: 32px;
+  min-height: 36px;
   text-transform: uppercase;
   transition: background 180ms ease, transform 180ms ease;
 }
@@ -604,26 +627,26 @@ h1 em,
 
 .network-panel {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   grid-template-rows: auto 1fr;
 }
 
 .probability-list {
   display: grid;
-  gap: 5px;
+  gap: 6px;
 }
 
 .probability-row {
   align-items: center;
   display: grid;
-  gap: 6px;
-  grid-template-columns: 14px 1fr 34px;
+  gap: 8px;
+  grid-template-columns: 18px 1fr 42px;
 }
 
 .probability-row span {
   color: #81948c;
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .probability-track {
@@ -966,40 +989,23 @@ footer > a:last-child {
 
 @media (max-width: 980px) {
   .hero {
-    grid-template-columns: 1fr;
-    row-gap: 40px;
     padding-top: 100px;
   }
 
-  .hero-game {
-    grid-column: 1;
-    grid-row: 2;
-    justify-self: start;
-    max-width: 620px;
-  }
-
-  .game-stage {
-    grid-template-columns: minmax(150px, 0.86fr) minmax(180px, 1.14fr);
-  }
-
-  .probability-row {
-    gap: 8px;
-    grid-template-columns: 18px 1fr 42px;
-  }
-
-  .probability-row span {
-    font-size: 9px;
-  }
-
   .hero-copy {
-    grid-column: 1;
-    grid-row: 1;
-    padding-bottom: 0;
     max-width: 760px;
   }
 
-  .hero-proof {
-    grid-row: 3;
+  .playground-section {
+    grid-template-columns: 1fr;
+  }
+
+  .playground-copy {
+    max-width: 720px;
+  }
+
+  .game-stage {
+    grid-template-columns: minmax(190px, 0.82fr) minmax(260px, 1.18fr);
   }
 
   .intro,
@@ -1068,8 +1074,9 @@ footer > a:last-child {
     padding-bottom: 0;
   }
 
-  .hero-game {
-    max-width: 100%;
+  .playground-section {
+    padding-top: 64px;
+    padding-bottom: 64px;
   }
 
   .hero-proof {

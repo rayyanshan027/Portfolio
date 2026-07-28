@@ -16,6 +16,9 @@
   const templateContext = templateCanvas.getContext("2d");
   const digits = Array.from({ length: 10 }, (_, digit) => digit);
   const gridSize = 28;
+  const digitCanvasSize = 280;
+  const networkCanvasWidth = 460;
+  const networkCanvasHeight = 280;
   let templates = [];
 
   let isDrawing = false;
@@ -23,6 +26,9 @@
   let lastGuess = null;
   let probabilities = digits.map(() => 0.1);
   let activations = Array.from({ length: 12 }, () => 0.08);
+  let mnistModel = null;
+  let modelReady = false;
+  let pixelRatio = 1;
 
   setupCanvas();
   templates = digits.map((digit) => createTemplates(digit));
@@ -30,6 +36,7 @@
   clearDrawing();
   renderNetwork();
   updateProbabilities();
+  loadMnistModel();
 
   digitCanvas.addEventListener("pointerdown", startDrawing);
   digitCanvas.addEventListener("pointermove", draw);
@@ -37,16 +44,41 @@
   digitCanvas.addEventListener("pointercancel", stopDrawing);
   digitCanvas.addEventListener("pointerleave", stopDrawing);
   clearButton?.addEventListener("click", clearDrawing);
+  window.addEventListener("resize", resizeCanvases);
 
   function setupCanvas() {
+    resizeCanvases();
     digitContext.fillStyle = "#09231d";
-    digitContext.fillRect(0, 0, digitCanvas.width, digitCanvas.height);
+    digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
     digitContext.lineCap = "round";
     digitContext.lineJoin = "round";
     digitContext.lineWidth = 22;
     digitContext.strokeStyle = "#baffd8";
     templateCanvas.width = gridSize;
     templateCanvas.height = gridSize;
+  }
+
+  function resizeCanvases() {
+    const drawingSnapshot = document.createElement("canvas");
+    drawingSnapshot.width = digitCanvasSize;
+    drawingSnapshot.height = digitCanvasSize;
+    drawingSnapshot
+      .getContext("2d")
+      .drawImage(digitCanvas, 0, 0, digitCanvas.width, digitCanvas.height, 0, 0, digitCanvasSize, digitCanvasSize);
+
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    setCanvasResolution(digitCanvas, digitContext, digitCanvasSize, digitCanvasSize);
+    setCanvasResolution(networkCanvas, networkContext, networkCanvasWidth, networkCanvasHeight);
+    digitContext.fillStyle = "#09231d";
+    digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
+    digitContext.drawImage(drawingSnapshot, 0, 0);
+    renderNetwork();
+  }
+
+  function setCanvasResolution(canvas, context, logicalWidth, logicalHeight) {
+    canvas.width = Math.round(logicalWidth * pixelRatio);
+    canvas.height = Math.round(logicalHeight * pixelRatio);
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   }
 
   function startDrawing(event) {
@@ -89,8 +121,8 @@
 
   function getPoint(event) {
     const rect = digitCanvas.getBoundingClientRect();
-    const scaleX = digitCanvas.width / rect.width;
-    const scaleY = digitCanvas.height / rect.height;
+    const scaleX = digitCanvasSize / rect.width;
+    const scaleY = digitCanvasSize / rect.height;
 
     return {
       x: (event.clientX - rect.left) * scaleX,
@@ -113,23 +145,53 @@
       return;
     }
 
-    const similarities = templates.map((digitTemplates) => getDigitScore(input, digitTemplates));
-
-    const featureAdjustments = getFeatureAdjustments(input);
-    const scores = similarities.map((similarity, digit) => Math.exp((similarity + featureAdjustments[digit]) * 14));
-    const total = scores.reduce((sum, value) => sum + value, 0);
-    probabilities = scores.map((value) => value / total);
+    probabilities = modelReady ? predictWithMnistModel(input) : predictWithPrototypeClassifier(input);
     lastGuess = probabilities.indexOf(Math.max(...probabilities));
     activations = makeActivations(input, probabilities);
     predictionEl.textContent = String(lastGuess);
-    statusEl.textContent = `PREDICTING ${lastGuess} · ${(probabilities[lastGuess] * 100).toFixed(0)}%`;
+    statusEl.textContent = `${modelReady ? "CNN" : "TEMPLATE"} ${lastGuess} · ${(probabilities[lastGuess] * 100).toFixed(0)}%`;
     updateProbabilities();
     renderNetwork();
   }
 
+  async function loadMnistModel() {
+    if (!window.tf) {
+      statusEl.textContent = "TEMPLATE MODE";
+      return;
+    }
+
+    try {
+      statusEl.textContent = "LOADING CNN";
+      mnistModel = await window.tf.loadLayersModel("./assets/mnist/model.json");
+      modelReady = true;
+      statusEl.textContent = "CNN READY";
+    } catch (error) {
+      modelReady = false;
+      statusEl.textContent = "TEMPLATE MODE";
+      console.warn("MNIST model failed to load; using template classifier.", error);
+    }
+  }
+
+  function predictWithMnistModel(input) {
+    const output = window.tf.tidy(() => {
+      const tensor = window.tf.tensor4d(input, [1, gridSize, gridSize, 1]);
+      return mnistModel.predict(tensor).dataSync();
+    });
+
+    return Array.from(output);
+  }
+
+  function predictWithPrototypeClassifier(input) {
+    const similarities = templates.map((digitTemplates) => getDigitScore(input, digitTemplates));
+    const featureAdjustments = getFeatureAdjustments(input);
+    const scores = similarities.map((similarity, digit) => Math.exp((similarity + featureAdjustments[digit]) * 14));
+    const total = scores.reduce((sum, value) => sum + value, 0);
+    return scores.map((value) => value / total);
+  }
+
   function normalizeDrawing() {
-    const source = digitContext.getImageData(0, 0, digitCanvas.width, digitCanvas.height);
-    const bounds = findInkBounds(source, digitCanvas.width, digitCanvas.height);
+    const source = getLogicalImageData(digitCanvas, digitContext, digitCanvasSize, digitCanvasSize);
+    const bounds = findInkBounds(source, digitCanvasSize, digitCanvasSize);
 
     templateContext.clearRect(0, 0, gridSize, gridSize);
     templateContext.fillStyle = "#000";
@@ -149,10 +211,10 @@
 
     templateContext.drawImage(
       digitCanvas,
-      bounds.minX,
-      bounds.minY,
-      width,
-      height,
+      bounds.minX * pixelRatio,
+      bounds.minY * pixelRatio,
+      width * pixelRatio,
+      height * pixelRatio,
       targetX,
       targetY,
       targetWidth,
@@ -160,6 +222,19 @@
     );
 
     return thickenValues(imageDataToValues(templateContext.getImageData(0, 0, gridSize, gridSize)));
+  }
+
+  function getLogicalImageData(canvas, context, logicalWidth, logicalHeight) {
+    if (pixelRatio === 1) {
+      return context.getImageData(0, 0, logicalWidth, logicalHeight);
+    }
+
+    const snapshotCanvas = document.createElement("canvas");
+    const snapshotContext = snapshotCanvas.getContext("2d");
+    snapshotCanvas.width = logicalWidth;
+    snapshotCanvas.height = logicalHeight;
+    snapshotContext.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, logicalWidth, logicalHeight);
+    return snapshotContext.getImageData(0, 0, logicalWidth, logicalHeight);
   }
 
   function getSimilarity(input, template) {
@@ -426,8 +501,8 @@
   }
 
   function renderNetwork() {
-    const width = networkCanvas.width;
-    const height = networkCanvas.height;
+    const width = networkCanvasWidth;
+    const height = networkCanvasHeight;
     networkContext.clearRect(0, 0, width, height);
     networkContext.fillStyle = "#09231d";
     networkContext.fillRect(0, 0, width, height);
@@ -488,7 +563,7 @@
 
   function clearDrawing() {
     digitContext.fillStyle = "#09231d";
-    digitContext.fillRect(0, 0, digitCanvas.width, digitCanvas.height);
+    digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
     probabilities = digits.map(() => 0.1);
     activations = Array.from({ length: 12 }, () => 0.08);
     lastGuess = null;
