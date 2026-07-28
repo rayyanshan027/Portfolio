@@ -23,6 +23,8 @@
 
   let isDrawing = false;
   let lastPoint = null;
+  let currentStroke = null;
+  let strokes = [];
   let lastGuess = null;
   let probabilities = digits.map(() => 0.1);
   let activations = Array.from({ length: 12 }, () => 0.08);
@@ -99,6 +101,8 @@
     isDrawing = true;
     activePointerId = event.pointerId;
     lastPoint = getPoint(event);
+    currentStroke = [lastPoint];
+    strokes.push(currentStroke);
     if (typeof digitCanvas.setPointerCapture === "function") {
       digitCanvas.setPointerCapture(event.pointerId);
     }
@@ -121,6 +125,7 @@
     digitContext.moveTo(lastPoint.x, lastPoint.y);
     digitContext.lineTo(point.x, point.y);
     digitContext.stroke();
+    currentStroke?.push(point);
     lastPoint = point;
     classifyDrawing();
   }
@@ -134,6 +139,8 @@
     isDrawing = true;
     activePointerId = null;
     lastPoint = getPoint(event.changedTouches[0]);
+    currentStroke = [lastPoint];
+    strokes.push(currentStroke);
     drawDot(lastPoint);
     classifyDrawing();
   }
@@ -149,6 +156,7 @@
     digitContext.moveTo(lastPoint.x, lastPoint.y);
     digitContext.lineTo(point.x, point.y);
     digitContext.stroke();
+    currentStroke?.push(point);
     lastPoint = point;
     classifyDrawing();
   }
@@ -160,6 +168,7 @@
 
     isDrawing = false;
     lastPoint = null;
+    currentStroke = null;
     activePointerId = null;
   }
 
@@ -241,8 +250,7 @@
   }
 
   function normalizeDrawing() {
-    const source = getLogicalImageData(digitCanvas, digitContext, digitCanvasSize, digitCanvasSize);
-    const bounds = findInkBounds(source, digitCanvasSize, digitCanvasSize);
+    const bounds = findStrokeBounds();
 
     if (!bounds) {
       return new Array(gridSize * gridSize).fill(0);
@@ -255,40 +263,71 @@
     const targetHeight = Math.max(1, height * scale);
     const targetX = (gridSize - targetWidth) / 2;
     const targetY = (gridSize - targetHeight) / 2;
-    const values = new Array(gridSize * gridSize).fill(0);
 
-    for (let y = bounds.minY; y <= bounds.maxY; y += 1) {
-      for (let x = bounds.minX; x <= bounds.maxX; x += 1) {
-        const index = (y * digitCanvasSize + x) * 4;
-        const inkValue = getInkValue(source.data[index], source.data[index + 1], source.data[index + 2]);
+    templateContext.clearRect(0, 0, gridSize, gridSize);
+    templateContext.fillStyle = "#000";
+    templateContext.fillRect(0, 0, gridSize, gridSize);
+    templateContext.strokeStyle = "#fff";
+    templateContext.lineCap = "round";
+    templateContext.lineJoin = "round";
+    templateContext.lineWidth = Math.max(1.2, 22 * scale);
 
-        if (inkValue <= 0) {
-          continue;
-        }
-
-        const normalizedX = targetX + (x - bounds.minX) * scale;
-        const normalizedY = targetY + (y - bounds.minY) * scale;
-        const gridX = Math.max(0, Math.min(gridSize - 1, Math.round(normalizedX)));
-        const gridY = Math.max(0, Math.min(gridSize - 1, Math.round(normalizedY)));
-        const gridIndex = gridY * gridSize + gridX;
-        values[gridIndex] = Math.max(values[gridIndex], inkValue);
+    strokes.forEach((stroke) => {
+      if (!stroke.length) {
+        return;
       }
-    }
 
-    return thickenValues(values);
+      templateContext.beginPath();
+      stroke.forEach((point, index) => {
+        const normalizedX = targetX + (point.x - bounds.minX) * scale;
+        const normalizedY = targetY + (point.y - bounds.minY) * scale;
+
+        if (index === 0) {
+          templateContext.moveTo(normalizedX, normalizedY);
+        } else {
+          templateContext.lineTo(normalizedX, normalizedY);
+        }
+      });
+
+      if (stroke.length === 1) {
+        const point = stroke[0];
+        const normalizedX = targetX + (point.x - bounds.minX) * scale;
+        const normalizedY = targetY + (point.y - bounds.minY) * scale;
+        templateContext.lineTo(normalizedX + 0.01, normalizedY + 0.01);
+      }
+
+      templateContext.stroke();
+    });
+
+    return thickenValues(imageDataToValues(templateContext.getImageData(0, 0, gridSize, gridSize)));
   }
 
-  function getLogicalImageData(canvas, context, logicalWidth, logicalHeight) {
-    if (pixelRatio === 1) {
-      return context.getImageData(0, 0, logicalWidth, logicalHeight);
+  function findStrokeBounds() {
+    if (!strokes.some((stroke) => stroke.length)) {
+      return null;
     }
 
-    const snapshotCanvas = document.createElement("canvas");
-    const snapshotContext = snapshotCanvas.getContext("2d");
-    snapshotCanvas.width = logicalWidth;
-    snapshotCanvas.height = logicalHeight;
-    snapshotContext.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, logicalWidth, logicalHeight);
-    return snapshotContext.getImageData(0, 0, logicalWidth, logicalHeight);
+    const padding = digitContext.lineWidth / 2;
+    let minX = digitCanvasSize;
+    let minY = digitCanvasSize;
+    let maxX = 0;
+    let maxY = 0;
+
+    strokes.forEach((stroke) => {
+      stroke.forEach((point) => {
+        minX = Math.min(minX, point.x - padding);
+        minY = Math.min(minY, point.y - padding);
+        maxX = Math.max(maxX, point.x + padding);
+        maxY = Math.max(maxY, point.y + padding);
+      });
+    });
+
+    return {
+      minX: Math.max(0, minX),
+      minY: Math.max(0, minY),
+      maxX: Math.min(digitCanvasSize, maxX),
+      maxY: Math.min(digitCanvasSize, maxY),
+    };
   }
 
   function getSimilarity(input, template) {
@@ -476,42 +515,6 @@
     return thickened;
   }
 
-  function findInkBounds(imageData, width, height) {
-    let minX = width;
-    let minY = height;
-    let maxX = -1;
-    let maxY = -1;
-
-    for (let y = 0; y < height; y += 1) {
-      for (let x = 0; x < width; x += 1) {
-        const index = (y * width + x) * 4;
-        if (getInkValue(imageData.data[index], imageData.data[index + 1], imageData.data[index + 2]) > 0) {
-          minX = Math.min(minX, x);
-          minY = Math.min(minY, y);
-          maxX = Math.max(maxX, x);
-          maxY = Math.max(maxY, y);
-        }
-      }
-    }
-
-    return maxX >= 0 ? { minX, minY, maxX, maxY } : null;
-  }
-
-  function getInkValue(red, green, blue) {
-    const greenInk = green > 90 && green > red * 1.2 && green > blue * 1.2;
-    const darkInk = red < 18 && green < 18 && blue < 18;
-
-    if (greenInk) {
-      return Math.min(1, green / 255);
-    }
-
-    if (darkInk) {
-      return 1;
-    }
-
-    return 0;
-  }
-
   function makeActivations(input, output) {
     const regions = [
       [0, 0, 14, 14],
@@ -630,6 +633,11 @@
   }
 
   function clearDrawing() {
+    strokes = [];
+    currentStroke = null;
+    lastPoint = null;
+    isDrawing = false;
+    activePointerId = null;
     digitContext.fillStyle = "#09231d";
     digitContext.fillRect(0, 0, digitCanvasSize, digitCanvasSize);
     applyDigitDrawingStyle();
